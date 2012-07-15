@@ -218,26 +218,51 @@ def daily(request):
 
     product = request.GET.get('p')
     if product is None:
-        product = 'Firefox'
+        product = settings.DEFAULT_PRODUCT
     data['product'] = product
 
-    versions = []
-    for release in request.currentversions:
-        if release['product'] == request.product and release['featured']:
-            versions.append(release['version'])
+    versions = request.GET.getlist('v[]')
+    versions = [version for version in versions if not version == '']
+    if versions == []:
+        for release in request.currentversions:
+            if release['product'] == product and release['featured']:
+                versions.append(release['version'])
 
-    os_names = ['Windows', 'Mac', 'Linux']
+    os_names = request.GET.getlist('os[]', None)
+    if os_names is None:
+        os_names = ['Windows', 'Mac', 'Linux']
 
-    end_date = datetime.datetime.utcnow()
-    start_date = end_date - datetime.timedelta(days=8)
+    hang_type = request.GET.get('hang_type')
+    if hang_type is None:
+        hang_type = 'any'
+
+    throttle = request.GET.getlist('throttle[]')
+
+    end_date = request.GET.get('date_end', None)
+    if end_date is None:
+        end_date = datetime.datetime.utcnow()
+    else:
+        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+    start_date = request.GET.get('date_start', None)
+    if start_date is None:
+        start_date = end_date - datetime.timedelta(days=8)
+    else:
+        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
 
     api = models.ADUByDay()
-    adubyday = api.get(product, versions, os_names, start_date, end_date)
+    adubyday = api.get(product, versions, os_names, start_date, end_date,
+                       hang_type=hang_type)
 
     data['graph_data'] = json.dumps(
         plot_graph(start_date, end_date, adubyday, request.currentversions)
     )
     data['report'] = 'daily'
+    data['versions'] = versions
+    data['start_date'] = start_date.strftime('%Y-%m-%d')
+    data['end_date'] = end_date.strftime('%Y-%m-%d')
+    data['throttle'] = throttle
+    data['os_names'] = os_names
+    data['hang_type'] = hang_type
 
     return render(request, 'crashstats/daily.html', data)
 
