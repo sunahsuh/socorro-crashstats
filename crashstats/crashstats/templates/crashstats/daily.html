@@ -28,7 +28,7 @@
         <div id="daily_search_version">
             <h3><a href="#" id="click_by_version">Crashes per ADU by Version</a></h3>
             <p>All ADU ratios are generated per 100 ADUs, not per single ADU. "3.5 crashes/ADU" means that there are 3.5 crashes per 100 users, not per user. This ratio also does not distinguish between users who crash multiple times and multiple crashing users.</p>
-            <form id="daily_search_version_form" name="daily_search_version_form" action="{{ url('crashstats.daily') }}">
+            <form id="daily_search_version_form" name="daily_search_version_form" action="{{ url('crashstats.daily') }}" {% if form_selection != 'by_version' %} style="display:none" {% endif %}">
 
                 <input type="hidden" name="form_selection" value="by_version">
 
@@ -101,115 +101,64 @@
 
                 <input id="daily_search_version_form_submit" type="submit" name="submit" value="Generate">
             </form>
+                    <td>
         </div>
 
         <div id="daily_search_os">
             <h3><a href="#" id="click_by_os">Crashes per ADU by O/S</a></h3>
-            <form id="daily_search_os_form" action="/daily" method="get" style="display: none">
+            <form id="daily_search_os_form" action="/daily" method="get" {% if form_selection != 'by_os' %} style="display:none" {% endif %}>
                 <input type="hidden" name="form_selection" value="by_os">
 
                 <table class="by_version">
                     <tr>
                     <th>Product</th>
                     <td>
-                    <select id="daily_search_os_form_products" name="p">
-                                                    <option value="Firefox"
-                                                                    SELECTED
-                                                            >Firefox</option>
-                                                    <option value="Fennec"
-                                                            >Fennec</option>
-                                                    <option value="Camino"
-                                                            >Camino</option>
-                                                    <option value="Thunderbird"
-                                                            >Thunderbird</option>
-                                                    <option value="SeaMonkey"
-                                                            >SeaMonkey</option>
-                                                    <option value="FennecAndroid"
-                                                            >FennecAndroid</option>
-                                            </select>
+                    <select id="daily_search_version_form_products" name="p">
+                {% for r in currentversions|groupby('product') %}
+                    {% if r[0] == product %}
+                    <option value="{{ r[0] }}" selected>{{ r[0] }}</option>
+                    {% else %}
+                    <option value="{{ r[0] }}">{{ r[0] }}</option>
+                    {% endif %}
+                {% endfor %}
+                    </select>
                     </td>
                     </tr>
-
                     <tr>
-                        <th>Version</th>
-                        <td>
-                                                        <select id="version4" name="v[]">
-                                <option value="">-- versions --</option>
-                                                                    <option value="15.0a1" throttle="100.00" key="4"
-                                        SELECTED                                    >15.0a1</option>
-                                                                    <option value="14.0a2" throttle="100.00" key="4"
-                                                                            >14.0a2</option>
-                                                                    <option value="14.0a1" throttle="100.00" key="4"
-                                                                            >14.0a1</option>
-                                                                    <option value="13.0b3" throttle="100.00" key="4"
-                                                                            >13.0b3</option>
-                                                                    <option value="13.0b2" throttle="100.00" key="4"
-                                                                            >13.0b2</option>
-                                                                    <option value="13.0b1" throttle="100.00" key="4"
-                                                                            >13.0b1</option>
-                                                                    <option value="13.0a2" throttle="100.00" key="4"
-                                                                            >13.0a2</option>
-                                                                    <option value="12.0" throttle="10.00" key="4"
-                                                                            >12.0</option>
-                                                                    <option value="12.0b6" throttle="100.00" key="4"
-                                                                            >12.0b6</option>
-                                                                    <option value="12.0b5" throttle="100.00" key="4"
-                                                                            >12.0b5</option>
-                                                                    <option value="12.0b4" throttle="100.00" key="4"
-                                                                            >12.0b4</option>
-                                                                    <option value="12.0b3" throttle="100.00" key="4"
-                                                                            >12.0b3</option>
-                                                                    <option value="12.0b2" throttle="100.00" key="4"
-                                                                            >12.0b2</option>
-                                                                    <option value="12.0b1" throttle="100.00" key="4"
-                                                                            >12.0b1</option>
-                                                                    <option value="11.0" throttle="10.00" key="4"
-                                                                            >11.0</option>
-                                                                    <option value="11.0b8" throttle="100.00" key="4"
-                                                                            >11.0b8</option>
-                                                                    <option value="10.0.4esr" throttle="100.00" key="4"
-                                                                            >10.0.4esr</option>
-                                                                    <option value="10.0.3esr" throttle="100.00" key="4"
-                                                                            >10.0.3esr</option>
-                                                                    <option value="10.0.2esr" throttle="100.00" key="4"
-                                                                            >10.0.2esr</option>
-                                                                    <option value="10.0.2" throttle="10.00" key="4"
-                                                                            >10.0.2</option>
-                                                                    <option value="10.0.1esr" throttle="100.00" key="4"
-                                                                            >10.0.1esr</option>
-                                                                    <option value="10.0.1" throttle="10.00" key="4"
-                                                                            >10.0.1</option>
-                                                                    <option value="10.0esr" throttle="100.00" key="4"
-                                                                            >10.0esr</option>
-                                                                    <option value="10.0" throttle="10.00" key="4"
-                                                                            >10.0</option>
-                                                                    <option value="3.5.14pre" throttle="10.00" key="4"
-                                                                            >3.5.14pre</option>
-                                                                    <option value="3.5.13" throttle="10.00" key="4"
-                                                                            >3.5.13</option>
-                                                            </select>
+                        <th rowspan="4" valign="top">Versions</th>
+                        <td><select id="version4" name="v[]">
+                        <option value="">-- versions --</option>
+                    {% for r in currentversions|groupby('product') %}
+                        {% if r[0] == product %}
+                            {% for v in r[1] %}
+                                {% if v.featured %}
+                                    <option value="{{ v.version }}" {% if v.version == versions[0] %} SELECTED {% endif %}>{{ v.version }}</option>
+                                {% endif %}
+                            {% endfor  %}
+                        {% endif  %}
+                    {% endfor %}
                         </td>
                     </tr>
 
                     <tr>
-                    <th>Type:</th>
+                        <th>Type:</th>
                         <td>
-                           <span class="radio-item"><label><input type="radio" name="hang_type" value="any" checked="checked"  /> Any</label></span>
-                           <span class="radio-item"><label><input type="radio" name="hang_type" value="crash"  /> Crash</label></span>
-                           <span class="radio-item"><label><input type="radio" name="hang_type" value="hang"  /> Hang</label></span>
+                            {% for ht in ['any', 'crash', 'hang'] %}
+                                <span class="radio-item"><label><input type="radio" name="hang_type" value="{{ ht }}"{% if hang_type == ht or (hang_type is undefined and ht == 'any') %} checked="checked"{% endif %} /> {{ ht|capitalize }}</label></span>
+                            {% endfor %}
                         </td>
                     </tr>
                     <tr>
                         <th>Throttle</th>
-                        <td><input id="throttle4" class="version" type="text" name="throttle[]" value="100.00" title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
+                        <td><input id="throttle4" class="version" type="text" name="throttle[]" value="{% if throttle[0] %}{{ throttle[0] }}{% else %}100.00{% endif %}"  title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
                     </tr>
 
                     <tr class="datepicker-daily">
                         <th>When</th>
                         <td>
-                        <input class="date" type="text" name="date_start" value="2012-04-26" />
+                            <input class="date" type="text" name="date_start" value="{{ start_date }}" />
                         &nbsp; to &nbsp;
-                        <input class="date" type="text" name="date_end" value="2012-05-10" />
+                        <input class="date" type="text" name="date_end" value="{{ end_date }}" />
                         </td>
                     </tr>
                 </table>
@@ -220,310 +169,75 @@
 
         <div id="daily_search_report_type">
              <h3><a href="#" id="click_by_report_type">Crashes per ADU by Type</a></h3>
-             <form id="daily_search_report_type_form" action="/daily" method="get" style="display: none">
+             <form id="daily_search_report_type_form" action="/daily" method="get" {% if form_selection != 'by_report_type' %} style="display:none" {% endif %}">
 
                  <input type="hidden" name="form_selection" value="by_report_type">
 
                  <table class="by_version by_report_type">
-                     <tr>
-                     <th>Product</th>
-                     <td>
-                     <select name="p">
-                                                      <option value="Firefox"
-                                                                      SELECTED
-                                                              >Firefox</option>
-                                                      <option value="Fennec"
-                                                              >Fennec</option>
-                                                      <option value="Camino"
-                                                              >Camino</option>
-                                                      <option value="Thunderbird"
-                                                              >Thunderbird</option>
-                                                      <option value="SeaMonkey"
-                                                              >SeaMonkey</option>
-                                                      <option value="FennecAndroid"
-                                                              >FennecAndroid</option>
-                                              </select>
-                     </td>
-                     </tr>
+                    <tr>
+                    <th>Product</th>
+                    <td>
+                    <select id="daily_search_version_form_products" name="p">
+                {% for r in currentversions|groupby('product') %}
+                    {% if r[0] == product %}
+                    <option value="{{ r[0] }}" selected>{{ r[0] }}</option>
+                    {% else %}
+                    <option value="{{ r[0] }}">{{ r[0] }}</option>
+                    {% endif %}
+                {% endfor %}
+                    </select>
+                    </td>
+                    </tr>
+
+                    {% for i in range(4) %}
+                    <tr>
+                        {% if i == 0 %}
+                        <th rowspan="4" valign="top">Versions</th>
+                        {% endif %}
+
+                        <td><select id="version{{ i + 5 }}" name="v[]">
+                        <option value="">-- versions --</option>
+                    {% for r in currentversions|groupby('product') %}
+                        {% if r[0] == product %}
+                            {% for v in r[1] %}
+                                {% if v.featured %}
+                                    <option value="{{ v.version }}" {% if v.version == versions[i] %} SELECTED {% endif %}>{{ v.version }}</option>
+                                {% endif %}
+                            {% endfor  %}
+                        {% endif  %}
+                    {% endfor %}
+
+            </select> throttle <input id="throttle{{ i + 5 }}" class="version" type="text" name="throttle[]" value="{% if throttle[i] %}{{ throttle[i] }}{% else %}100.00{% endif %}"  title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
 
                     <tr>
-                        <th rowspan="4" valign="top">Versions</th>
-
-                        <td><select id="version5" name="v[]">
-                                <option value="">-- versions --</option>
-                                                                    <option value="15.0a1" throttle="100.00" key="5"
-                                        SELECTED                                    >15.0a1</option>
-                                                                    <option value="14.0a2" throttle="100.00" key="5"
-                                                                            >14.0a2</option>
-                                                                    <option value="14.0a1" throttle="100.00" key="5"
-                                                                            >14.0a1</option>
-                                                                    <option value="13.0b3" throttle="100.00" key="5"
-                                                                            >13.0b3</option>
-                                                                    <option value="13.0b2" throttle="100.00" key="5"
-                                                                            >13.0b2</option>
-                                                                    <option value="13.0b1" throttle="100.00" key="5"
-                                                                            >13.0b1</option>
-                                                                    <option value="13.0a2" throttle="100.00" key="5"
-                                                                            >13.0a2</option>
-                                                                    <option value="12.0" throttle="10.00" key="5"
-                                                                            >12.0</option>
-                                                                    <option value="12.0b6" throttle="100.00" key="5"
-                                                                            >12.0b6</option>
-                                                                    <option value="12.0b5" throttle="100.00" key="5"
-                                                                            >12.0b5</option>
-                                                                    <option value="12.0b4" throttle="100.00" key="5"
-                                                                            >12.0b4</option>
-                                                                    <option value="12.0b3" throttle="100.00" key="5"
-                                                                            >12.0b3</option>
-                                                                    <option value="12.0b2" throttle="100.00" key="5"
-                                                                            >12.0b2</option>
-                                                                    <option value="12.0b1" throttle="100.00" key="5"
-                                                                            >12.0b1</option>
-                                                                    <option value="11.0" throttle="10.00" key="5"
-                                                                            >11.0</option>
-                                                                    <option value="11.0b8" throttle="100.00" key="5"
-                                                                            >11.0b8</option>
-                                                                    <option value="10.0.4esr" throttle="100.00" key="5"
-                                                                            >10.0.4esr</option>
-                                                                    <option value="10.0.3esr" throttle="100.00" key="5"
-                                                                            >10.0.3esr</option>
-                                                                    <option value="10.0.2esr" throttle="100.00" key="5"
-                                                                            >10.0.2esr</option>
-                                                                    <option value="10.0.2" throttle="10.00" key="5"
-                                                                            >10.0.2</option>
-                                                                    <option value="10.0.1esr" throttle="100.00" key="5"
-                                                                            >10.0.1esr</option>
-                                                                    <option value="10.0.1" throttle="10.00" key="5"
-                                                                            >10.0.1</option>
-                                                                    <option value="10.0esr" throttle="100.00" key="5"
-                                                                            >10.0esr</option>
-                                                                    <option value="10.0" throttle="10.00" key="5"
-                                                                            >10.0</option>
-                                                                    <option value="3.5.14pre" throttle="10.00" key="5"
-                                                                            >3.5.14pre</option>
-                                                                    <option value="3.5.13" throttle="10.00" key="5"
-                                                                            >3.5.13</option>
-                                                            </select> throttle <input id="throttle5" class="version" type="text" name="throttle[]" value="100.00"  title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
+                        <th>Type:</th>
+                        <td>
+                            {% for rt in ['crash', 'oopp', 'hang_browser', 'hang_plugin'] %}
+                            <input id="report_type_{{rt}}_check" type="checkbox" name="report_type[]" value="{{ rt }}"{% if report_type|count == 0 or rt in report_type %} CHECKED {% endif %} /> <label for="report_type_{{rt}}_check">{{ rt }}</label>
+                            {% endfor %}
                         </td>
                     </tr>
-                <tr>
-                        <td><select id="version6" name="v[]">
-                                <option value="">-- versions --</option>
-                                                                    <option value="15.0a1" throttle="100.00" key="6"
-                                                                            >15.0a1</option>
-                                                                    <option value="14.0a2" throttle="100.00" key="6"
-                                        SELECTED                                    >14.0a2</option>
-                                                                    <option value="14.0a1" throttle="100.00" key="6"
-                                                                            >14.0a1</option>
-                                                                    <option value="13.0b3" throttle="100.00" key="6"
-                                                                            >13.0b3</option>
-                                                                    <option value="13.0b2" throttle="100.00" key="6"
-                                                                            >13.0b2</option>
-                                                                    <option value="13.0b1" throttle="100.00" key="6"
-                                                                            >13.0b1</option>
-                                                                    <option value="13.0a2" throttle="100.00" key="6"
-                                                                            >13.0a2</option>
-                                                                    <option value="12.0" throttle="10.00" key="6"
-                                                                            >12.0</option>
-                                                                    <option value="12.0b6" throttle="100.00" key="6"
-                                                                            >12.0b6</option>
-                                                                    <option value="12.0b5" throttle="100.00" key="6"
-                                                                            >12.0b5</option>
-                                                                    <option value="12.0b4" throttle="100.00" key="6"
-                                                                            >12.0b4</option>
-                                                                    <option value="12.0b3" throttle="100.00" key="6"
-                                                                            >12.0b3</option>
-                                                                    <option value="12.0b2" throttle="100.00" key="6"
-                                                                            >12.0b2</option>
-                                                                    <option value="12.0b1" throttle="100.00" key="6"
-                                                                            >12.0b1</option>
-                                                                    <option value="11.0" throttle="10.00" key="6"
-                                                                            >11.0</option>
-                                                                    <option value="11.0b8" throttle="100.00" key="6"
-                                                                            >11.0b8</option>
-                                                                    <option value="10.0.4esr" throttle="100.00" key="6"
-                                                                            >10.0.4esr</option>
-                                                                    <option value="10.0.3esr" throttle="100.00" key="6"
-                                                                            >10.0.3esr</option>
-                                                                    <option value="10.0.2esr" throttle="100.00" key="6"
-                                                                            >10.0.2esr</option>
-                                                                    <option value="10.0.2" throttle="10.00" key="6"
-                                                                            >10.0.2</option>
-                                                                    <option value="10.0.1esr" throttle="100.00" key="6"
-                                                                            >10.0.1esr</option>
-                                                                    <option value="10.0.1" throttle="10.00" key="6"
-                                                                            >10.0.1</option>
-                                                                    <option value="10.0esr" throttle="100.00" key="6"
-                                                                            >10.0esr</option>
-                                                                    <option value="10.0" throttle="10.00" key="6"
-                                                                            >10.0</option>
-                                                                    <option value="3.5.14pre" throttle="10.00" key="6"
-                                                                            >3.5.14pre</option>
-                                                                    <option value="3.5.13" throttle="10.00" key="6"
-                                                                            >3.5.13</option>
-                                                            </select> throttle <input id="throttle6" class="version" type="text" name="throttle[]" value="100.00"  title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
+                    <tr>
+                        <th>O/S</th>
+                        <td>
+                            {% for os in ['Windows', 'Mac', 'Linux'] %}
+                                <input id="os_{{ os }}_check" type="checkbox" name="os[]" value="{{ os }}" {% if os in os_names or os_names|count == 0 %}CHECKED{% endif %} /> {{ os }} &nbsp;&nbsp;
+                            {% endfor %}
                         </td>
                     </tr>
-                <tr>
-                        <td><select id="version7" name="v[]">
-                                <option value="">-- versions --</option>
-                                                                    <option value="15.0a1" throttle="100.00" key="7"
-                                                                            >15.0a1</option>
-                                                                    <option value="14.0a2" throttle="100.00" key="7"
-                                                                            >14.0a2</option>
-                                                                    <option value="14.0a1" throttle="100.00" key="7"
-                                                                            >14.0a1</option>
-                                                                    <option value="13.0b3" throttle="100.00" key="7"
-                                                                            >13.0b3</option>
-                                                                    <option value="13.0b2" throttle="100.00" key="7"
-                                        SELECTED                                    >13.0b2</option>
-                                                                    <option value="13.0b1" throttle="100.00" key="7"
-                                                                            >13.0b1</option>
-                                                                    <option value="13.0a2" throttle="100.00" key="7"
-                                                                            >13.0a2</option>
-                                                                    <option value="12.0" throttle="10.00" key="7"
-                                                                            >12.0</option>
-                                                                    <option value="12.0b6" throttle="100.00" key="7"
-                                                                            >12.0b6</option>
-                                                                    <option value="12.0b5" throttle="100.00" key="7"
-                                                                            >12.0b5</option>
-                                                                    <option value="12.0b4" throttle="100.00" key="7"
-                                                                            >12.0b4</option>
-                                                                    <option value="12.0b3" throttle="100.00" key="7"
-                                                                            >12.0b3</option>
-                                                                    <option value="12.0b2" throttle="100.00" key="7"
-                                                                            >12.0b2</option>
-                                                                    <option value="12.0b1" throttle="100.00" key="7"
-                                                                            >12.0b1</option>
-                                                                    <option value="11.0" throttle="10.00" key="7"
-                                                                            >11.0</option>
-                                                                    <option value="11.0b8" throttle="100.00" key="7"
-                                                                            >11.0b8</option>
-                                                                    <option value="10.0.4esr" throttle="100.00" key="7"
-                                                                            >10.0.4esr</option>
-                                                                    <option value="10.0.3esr" throttle="100.00" key="7"
-                                                                            >10.0.3esr</option>
-                                                                    <option value="10.0.2esr" throttle="100.00" key="7"
-                                                                            >10.0.2esr</option>
-                                                                    <option value="10.0.2" throttle="10.00" key="7"
-                                                                            >10.0.2</option>
-                                                                    <option value="10.0.1esr" throttle="100.00" key="7"
-                                                                            >10.0.1esr</option>
-                                                                    <option value="10.0.1" throttle="10.00" key="7"
-                                                                            >10.0.1</option>
-                                                                    <option value="10.0esr" throttle="100.00" key="7"
-                                                                            >10.0esr</option>
-                                                                    <option value="10.0" throttle="10.00" key="7"
-                                                                            >10.0</option>
-                                                                    <option value="3.5.14pre" throttle="10.00" key="7"
-                                                                            >3.5.14pre</option>
-                                                                    <option value="3.5.13" throttle="10.00" key="7"
-                                                                            >3.5.13</option>
-                                                            </select> throttle <input id="throttle7" class="version" type="text" name="throttle[]" value="100.00"  title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
+
+                    <tr class="datepicker-daily">
+                        <th>When</th>
+                        <td>
+                            <input class="date" type="text" name="date_start" value="{{ start_date }}" />
+                        &nbsp; to &nbsp;
+                        <input class="date" type="text" name="date_end" value="{{ end_date }}" />
                         </td>
                     </tr>
-                <tr>
-                        <td><select id="version8" name="v[]">
-                                <option value="">-- versions --</option>
-                                                                    <option value="15.0a1" throttle="100.00" key="8"
-                                                                            >15.0a1</option>
-                                                                    <option value="14.0a2" throttle="100.00" key="8"
-                                                                            >14.0a2</option>
-                                                                    <option value="14.0a1" throttle="100.00" key="8"
-                                                                            >14.0a1</option>
-                                                                    <option value="13.0b3" throttle="100.00" key="8"
-                                                                            >13.0b3</option>
-                                                                    <option value="13.0b2" throttle="100.00" key="8"
-                                                                            >13.0b2</option>
-                                                                    <option value="13.0b1" throttle="100.00" key="8"
-                                                                            >13.0b1</option>
-                                                                    <option value="13.0a2" throttle="100.00" key="8"
-                                                                            >13.0a2</option>
-                                                                    <option value="12.0" throttle="10.00" key="8"
-                                        SELECTED                                    >12.0</option>
-                                                                    <option value="12.0b6" throttle="100.00" key="8"
-                                                                            >12.0b6</option>
-                                                                    <option value="12.0b5" throttle="100.00" key="8"
-                                                                            >12.0b5</option>
-                                                                    <option value="12.0b4" throttle="100.00" key="8"
-                                                                            >12.0b4</option>
-                                                                    <option value="12.0b3" throttle="100.00" key="8"
-                                                                            >12.0b3</option>
-                                                                    <option value="12.0b2" throttle="100.00" key="8"
-                                                                            >12.0b2</option>
-                                                                    <option value="12.0b1" throttle="100.00" key="8"
-                                                                            >12.0b1</option>
-                                                                    <option value="11.0" throttle="10.00" key="8"
-                                                                            >11.0</option>
-                                                                    <option value="11.0b8" throttle="100.00" key="8"
-                                                                            >11.0b8</option>
-                                                                    <option value="10.0.4esr" throttle="100.00" key="8"
-                                                                            >10.0.4esr</option>
-                                                                    <option value="10.0.3esr" throttle="100.00" key="8"
-                                                                            >10.0.3esr</option>
-                                                                    <option value="10.0.2esr" throttle="100.00" key="8"
-                                                                            >10.0.2esr</option>
-                                                                    <option value="10.0.2" throttle="10.00" key="8"
-                                                                            >10.0.2</option>
-                                                                    <option value="10.0.1esr" throttle="100.00" key="8"
-                                                                            >10.0.1esr</option>
-                                                                    <option value="10.0.1" throttle="10.00" key="8"
-                                                                            >10.0.1</option>
-                                                                    <option value="10.0esr" throttle="100.00" key="8"
-                                                                            >10.0esr</option>
-                                                                    <option value="10.0" throttle="10.00" key="8"
-                                                                            >10.0</option>
-                                                                    <option value="3.5.14pre" throttle="10.00" key="8"
-                                                                            >3.5.14pre</option>
-                                                                    <option value="3.5.13" throttle="10.00" key="8"
-                                                                            >3.5.13</option>
-                                                            </select> throttle <input id="throttle8" class="version" type="text" name="throttle[]" value="10.00"  title="The throttle rate is the effective throttle rate - the combined throttle rate for client-side throttling and server-side throttling." />%</td>
-                        </td>
-                    </tr>
-                                </tr>
-
-
-                 <tr>
-                     <th>Type:</th>
-                         <td>
-                                                     <input id="report_type_crash_check" type="checkbox" name="report_type[]" value="crash"
-                                                                              CHECKED
-                                                                      /> <label for="report_type_crash_check">crash</label>
-                                                          <input id="report_type_oopp_check" type="checkbox" name="report_type[]" value="oopp"
-                                                                              CHECKED
-                                                                      /> <label for="report_type_oopp_check">oopp</label>
-                                                          <input id="report_type_hang_browser_check" type="checkbox" name="report_type[]" value="hang_browser"
-                                                                              CHECKED
-                                                                      /> <label for="report_type_hang_browser_check">hang_browser</label>
-                                                          <input id="report_type_hang_plugin_check" type="checkbox" name="report_type[]" value="hang_plugin"
-                                                                              CHECKED
-                                                                      /> <label for="report_type_hang_plugin_check">hang_plugin</label>
-                                                                      <!-- span class="checkbox-item"><label><input type="checkbox" id="hang_type" name="hang_type" value="crash"  />Browser Crash</label></span -->
-                         </td>
-                     </tr>
-                     <tr>
-                         <th>O/S</th>
-                         <td>
-                                                              <input id="os_Windows_check" type="checkbox" name="os[]" value="Windows"
-                                                                              CHECKED
-                                                                      /> Windows &nbsp;&nbsp;
-                                                              <input id="os_Mac_check" type="checkbox" name="os[]" value="Mac"
-                                                                              CHECKED
-                                                                      /> Mac &nbsp;&nbsp;
-                                                              <input id="os_Linux_check" type="checkbox" name="os[]" value="Linux"
-                                                                              CHECKED
-                                                                      /> Linux &nbsp;&nbsp;
-                                                      </td>
-                     </tr>
-
-                     <tr class="datepicker-daily">
-                         <th>When</th>
-                         <td>
-                         <input class="date" type="text" name="date_start" value="2012-04-26" />
-                         &nbsp; to &nbsp;
-                         <input class="date" type="text" name="date_end" value="2012-05-10" />
-                         </td>
-                     </tr>
                  </table>
 
                  <input id="daily_search_report_type_form_submit" type="submit" name="submit" value="Generate">

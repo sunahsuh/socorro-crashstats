@@ -141,16 +141,17 @@ class CurrentVersions(SocorroMiddleware):
 
 class ADUByDay(SocorroMiddleware):
 
-    def get(self, product, versions, os_names, start_date, end_date, hang_type='any'):
+    def get(self, product, versions, os_names, start_date, end_date, 
+            report_type=['any']):
         params = {
             'product': product,
             'versions': ';'.join(versions),
             'os_names': ';'.join(os_names),
             'start_date': start_date.strftime('%Y-%m-%d'),
             'end_date': end_date.strftime('%Y-%m-%d'),
-            'hang_type': hang_type,
+            'report_type': ';'.join(report_type),
         }
-        url = ('/adu/byday/p/%(product)s/v/%(versions)s/rt/%(hang_type)s/os/'
+        url = ('/adu/byday/p/%(product)s/v/%(versions)s/rt/%(report_type)s/os/'
                '%(os_names)s/start/%(start_date)s/end/%(end_date)s' % params)
         return self.fetch(url)
 

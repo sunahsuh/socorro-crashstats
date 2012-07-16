@@ -216,53 +216,50 @@ def topcrasher(request, product=None, versions=None, days=None,
 def daily(request):
     data = {}
 
-    product = request.GET.get('p')
-    if product is None:
-        product = settings.DEFAULT_PRODUCT
-    data['product'] = product
+    form_selection = request.GET.get('form_selection', 'by_version')
+    product = request.GET.get('p', settings.DEFAULT_PRODUCT)
+    os_names = request.GET.getlist('os[]', ['Windows', 'Mac', 'Linux'])
+    hang_type = request.GET.get('hang_type', 'any')
+    report_type = request.GET.getlist('report_type[]')
+    throttle = request.GET.getlist('throttle[]')
 
     versions = request.GET.getlist('v[]')
+    # delete empty strings from the array
     versions = [version for version in versions if not version == '']
     if versions == []:
         for release in request.currentversions:
             if release['product'] == product and release['featured']:
                 versions.append(release['version'])
 
-    os_names = request.GET.getlist('os[]', None)
-    if os_names is None:
-        os_names = ['Windows', 'Mac', 'Linux']
-
-    hang_type = request.GET.get('hang_type')
-    if hang_type is None:
-        hang_type = 'any'
-
-    throttle = request.GET.getlist('throttle[]')
-
-    end_date = request.GET.get('date_end', None)
-    if end_date is None:
-        end_date = datetime.datetime.utcnow()
-    else:
+    end_date = request.GET.get('date_end', datetime.datetime.utcnow())
+    if type(end_date) is unicode:
         end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
-    start_date = request.GET.get('date_start', None)
-    if start_date is None:
-        start_date = end_date - datetime.timedelta(days=8)
-    else:
+    start_date = request.GET.get('date_start', 
+                                 end_date - datetime.timedelta(days=8))
+    if type(start_date) is unicode:
         start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
 
     api = models.ADUByDay()
-    adubyday = api.get(product, versions, os_names, start_date, end_date,
-                       hang_type=hang_type)
+    if(form_selection == 'by_report_type'):
+        adubyday = api.get(product, versions, os_names, start_date, end_date,
+                       report_type=report_type)
+    else:
+        adubyday = api.get(product, versions, os_names, start_date, end_date,
+                       report_type=[hang_type])
 
     data['graph_data'] = json.dumps(
         plot_graph(start_date, end_date, adubyday, request.currentversions)
     )
     data['report'] = 'daily'
+    data['form_selection'] = form_selection 
+    data['product'] = product
     data['versions'] = versions
     data['start_date'] = start_date.strftime('%Y-%m-%d')
     data['end_date'] = end_date.strftime('%Y-%m-%d')
     data['throttle'] = throttle
     data['os_names'] = os_names
     data['hang_type'] = hang_type
+    data['report_type'] = report_type
 
     return render(request, 'crashstats/daily.html', data)
 
