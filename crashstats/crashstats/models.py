@@ -142,7 +142,9 @@ class CurrentVersions(SocorroMiddleware):
 class ADUByDay(SocorroMiddleware):
 
     def get(self, product, versions, os_names, start_date, end_date, 
-            report_type=['any']):
+            report_type=None):
+        if report_type is None:
+            report_type = ['any']
         params = {
             'product': product,
             'versions': ';'.join(versions),
